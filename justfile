@@ -8,13 +8,11 @@ show-database:
     @if [ -n "${DATABASE_URL:-}" ]; then echo "DATABASE_URL is set"; else echo "DATABASE_URL is not set; Django will use local SQLite"; fi
 
 set-database-url:
-    @touch .env
-    @if grep -q '^DATABASE_URL=' .env; then \
-      perl -0pi -e "s#^DATABASE_URL=.*$#DATABASE_URL=postgresql://postgres.PROJECT_REF:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres#m" .env; \
-    else \
-      printf '%s\n' 'DATABASE_URL=postgresql://postgres.PROJECT_REF:PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres' >> .env; \
+    @if [ -z "${DATABASE_URL:-}" ]; then \
+      echo "DATABASE_URL is not set. Export it in your shell or put it in .env."; \
+      exit 1; \
     fi
-    @echo "DATABASE_URL written to .env"
+    @echo "DATABASE_URL is set"
 
 dev:
     {{python}} manage.py migrate
