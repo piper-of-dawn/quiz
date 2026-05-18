@@ -65,7 +65,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mcq_app.wsgi.application"
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+DATABASE_URL = (
+    os.environ.get("DATABASE_URL")
+    or os.environ.get("POSTGRES_URL")
+    or os.environ.get("POSTGRES_PRISMA_URL")
+    or os.environ.get("POSTGRES_URL_NON_POOLING")
+)
 if DATABASE_URL:
     DATABASES = {
         "default": dj_database_url.parse(

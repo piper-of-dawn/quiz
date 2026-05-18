@@ -4,7 +4,7 @@ Django quiz UI backed by Supabase Postgres. JSON files stay in the repo for easy
 
 ## Environment
 
-Set `DATABASE_URL` to the Supabase Postgres transaction pooler URL for deployed/serverless use.
+Set `DATABASE_URL` to the Supabase Postgres transaction pooler URL for deployed/serverless use. On Vercel, the Supabase integration variables are also supported automatically in this order: `POSTGRES_URL`, `POSTGRES_PRISMA_URL`, then `POSTGRES_URL_NON_POOLING` as a last fallback.
 
 ```bash
 cp .env.example .env
