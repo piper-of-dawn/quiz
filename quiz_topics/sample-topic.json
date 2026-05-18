@@ -1,0 +1,21 @@
+{
+  "metadata": {
+    "title": "Sample Topic",
+    "slug": "sample-topic",
+    "description": "A small editable example topic."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "topic": "Arithmetic",
+      "stem": "If $2 + 2 = x$, what is $x$?",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> Two plus two equals four.</p>"
+    }
+  ]
+}

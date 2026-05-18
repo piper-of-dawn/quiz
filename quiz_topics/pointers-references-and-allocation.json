@@ -1,0 +1,261 @@
+{
+  "metadata": {
+    "title": "Pointers, References, and Allocation",
+    "slug": "pointers-references-and-allocation",
+    "description": "C, C++, CUDA, and Rust basics around &, *, malloc, cudaMalloc, and references."
+  },
+  "questions": [
+    {
+      "id": 1,
+      "topic": "C/C++ Address-of Operator",
+      "stem": "In C or C++, if `int x = 10;`, what does the expression `&x` mean?",
+      "options": {
+        "A": "The value stored inside `x`",
+        "B": "The memory address of `x`",
+        "C": "A reference variable named `x`"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> In C/C++, unary <code>&</code> is the address-of operator. If <code>x</code> is an <code>int</code>, then <code>&x</code> produces the address where that integer object lives.</p><p>A is wrong because the value is read by writing <code>x</code>, not <code>&x</code>. C is wrong because <code>&x</code> is an expression, not a new reference declaration.</p>"
+    },
+    {
+      "id": 2,
+      "topic": "Pointer Declaration and Dereference",
+      "stem": "Given `int x = 10; int* p = &x;`, what does `*p` mean in an expression?",
+      "options": {
+        "A": "Declare `p` as a pointer",
+        "B": "Dereference `p` and access the `int` object it points to",
+        "C": "Get the address of the pointer variable `p`"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> In a declaration, <code>*</code> helps say <code>p</code> is a pointer. But in an expression like <code>*p</code>, it dereferences the pointer and reaches the pointed-to <code>int</code>.</p><p>A confuses declaration syntax with expression syntax. C describes <code>&p</code>, not <code>*p</code>.</p>"
+    },
+    {
+      "id": 3,
+      "topic": "Values, Pointers, and References",
+      "stem": "Which statement best describes the difference between `int x`, `int* p`, and `int& r` in C++?",
+      "options": {
+        "A": "`x` is an integer object, `p` is a pointer that stores an address, and `r` is a reference alias to an existing integer",
+        "B": "`x`, `p`, and `r` all store memory addresses",
+        "C": "`int& r` creates a raw pointer that must be dereferenced with `*r`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>int x</code> is the actual integer object. <code>int* p</code> is a pointer variable whose value is an address of an <code>int</code>. <code>int& r</code> is a reference, which behaves like another name for an existing <code>int</code>.</p><p>B is wrong because <code>x</code> stores an integer value, not an address. C is wrong because C++ references are not used with <code>*r</code>.</p>"
+    },
+    {
+      "id": 4,
+      "topic": "Invalid Reference Initialization",
+      "stem": "Why is `int& r = &x;` wrong in C++ when `x` is an `int`?",
+      "options": {
+        "A": "Because `&x` has type `int*`, but `int&` must bind to an `int` object",
+        "B": "Because references can only bind to heap memory",
+        "C": "Because `&` is not allowed anywhere in C++ reference code"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> A reference like <code>int& r</code> must bind directly to an <code>int</code>, so <code>int& r = x;</code> is valid. But <code>&x</code> is the address of <code>x</code>, so its type is <code>int*</code>, not <code>int</code>.</p><p>B is wrong because references can bind to stack objects. C is wrong because <code>&</code> is legal; it is just producing the wrong type here.</p>"
+    },
+    {
+      "id": 5,
+      "topic": "Expression Types",
+      "stem": "Given `int x = 10; int* p = &x;`, which type mapping is correct?",
+      "options": {
+        "A": "`&x` is `int*`, `p` is `int*`, `&p` is `int**`, `*p` is `int`, `&*p` is `int*`, and `*&p` is `int*`",
+        "B": "`&x` is `int`, `p` is `int`, `&p` is `int*`, `*p` is `int*`, `&*p` is `int`, and `*&p` is `int`",
+        "C": "`&x`, `p`, `&p`, `*p`, `&*p`, and `*&p` are all `int*`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>&x</code> produces a pointer to <code>x</code>, so it is <code>int*</code>. <code>p</code> is already <code>int*</code>. <code>&p</code> is the address of the pointer variable itself, so it is <code>int**</code>. <code>*p</code> reaches the integer, so it is <code>int</code>. <code>&*p</code> goes to the int then takes its address, giving <code>int*</code>. <code>*&p</code> takes the address of <code>p</code> then dereferences back to <code>p</code>, so it is <code>int*</code>.</p>"
+    },
+    {
+      "id": 6,
+      "topic": "Invalid Pointer Expressions",
+      "stem": "Given `int x = 10; int* p = &x;`, which statement about `&&x` and `**p` is correct in ordinary C/C++ expression usage?",
+      "options": {
+        "A": "`&&x` is just the address of the address of `x`, and `**p` is valid because every pointer can be dereferenced twice",
+        "B": "`&&x` is not the normal way to take address-of twice, and `**p` is invalid because `*p` is an `int`, not another pointer",
+        "C": "`&&x` and `**p` both produce an `int**`"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> After <code>*p</code>, you have an <code>int</code>. You cannot dereference that again with another <code>*</code> unless the first dereference produced another pointer. Also, <code>&&x</code> is not a normal address-of-twice expression; in C++ <code>&&</code> has separate meanings such as logical AND or rvalue-reference syntax depending on context.</p><p>A and C incorrectly treat these symbols as if operators can always be stacked mechanically.</p>"
+    },
+    {
+      "id": 7,
+      "topic": "malloc(sizeof(int))",
+      "stem": "In C, what is the purpose of `malloc(sizeof(int))`?",
+      "options": {
+        "A": "Allocate enough heap memory to store one `int` and return the starting address of that memory",
+        "B": "Create an integer initialized to zero on the stack",
+        "C": "Return the integer value stored at the address `sizeof(int)`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>sizeof(int)</code> asks how many bytes one <code>int</code> needs. <code>malloc</code> asks the heap for that many bytes and returns a pointer to the first byte of the block.</p><p>B is wrong because <code>malloc</code> allocates heap memory and does not initialize like a normal stack variable. C is wrong because <code>sizeof(int)</code> is a size, not an address to read from.</p>"
+    },
+    {
+      "id": 8,
+      "topic": "malloc Return Value",
+      "stem": "Why does `malloc` return a pointer instead of returning the allocated object itself?",
+      "options": {
+        "A": "Because heap allocation gives you a memory block, and the program needs the block's address to use it later",
+        "B": "Because C functions cannot return integer values",
+        "C": "Because `malloc` always allocates exactly one pointer-sized object"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> The heap block lives somewhere in memory. To let your code access and eventually free that block, <code>malloc</code> returns its address.</p><p>B is false because C functions can return integers. C is false because <code>malloc</code> allocates the number of bytes you request, not always one pointer-sized object.</p>"
+    },
+    {
+      "id": 9,
+      "topic": "cudaMalloc Pointer-to-Pointer",
+      "stem": "Why does CUDA code commonly call `cudaMalloc((void**)&p, sizeof(int))` instead of `p = cudaMalloc(sizeof(int))`?",
+      "options": {
+        "A": "Because `cudaMalloc` writes the allocated device address into `p`, so it needs the address of the pointer variable",
+        "B": "Because CUDA device memory can only store `void` values",
+        "C": "Because `cudaMalloc` returns the allocated pointer as its return value"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>cudaMalloc</code> uses its return value for an error/status code. The allocated device pointer is returned through an output parameter. To modify your pointer variable <code>p</code>, the function needs <code>&p</code>, which is a pointer to the pointer variable.</p><p>B is wrong because <code>void*</code> is a generic pointer type, not a claim that memory stores void values. C describes <code>malloc</code>-style design, not <code>cudaMalloc</code>.</p>"
+    },
+    {
+      "id": 10,
+      "topic": "malloc vs cudaMalloc",
+      "stem": "What is the key API-style difference between `malloc` and `cudaMalloc`?",
+      "options": {
+        "A": "`malloc` returns the allocated pointer directly, while `cudaMalloc` returns a status code and writes the allocated pointer through a pointer-to-pointer argument",
+        "B": "`malloc` and `cudaMalloc` both return the allocated pointer directly",
+        "C": "`malloc` requires pointer-to-pointer, while `cudaMalloc` does not"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>malloc</code> has a return-pointer style: <code>p = malloc(size)</code>. <code>cudaMalloc</code> has an output-parameter style: <code>cudaMalloc((void**)&p, size)</code>, and the function return value reports success or failure.</p><p>B and C reverse or erase the main design difference.</p>"
+    },
+    {
+      "id": 11,
+      "topic": "Rust References",
+      "stem": "In Rust, what is the best beginner-level description of `&x`?",
+      "options": {
+        "A": "A safe reference/borrow of `x`, checked by Rust's borrowing rules",
+        "B": "Exactly the same thing as a C raw pointer in every way",
+        "C": "A request to allocate `x` on the heap"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> In Rust, <code>&x</code> creates a reference, also described as borrowing <code>x</code>. It is pointer-like in that it refers to data without owning it, but it is checked by Rust's safety and borrowing rules.</p><p>B is wrong because Rust references are not exactly C raw pointers. C is wrong because borrowing does not allocate heap memory.</p>"
+    },
+    {
+      "id": 12,
+      "topic": "Rust Raw Pointers",
+      "stem": "Which Rust types represent raw pointers?",
+      "options": {
+        "A": "`*const T` for a const raw pointer and `*mut T` for a mutable raw pointer",
+        "B": "`&const T` for a const raw pointer and `&mut T` for a mutable raw pointer",
+        "C": "`int*` and `void**`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> Rust raw pointer types use the star syntax: <code>*const T</code> and <code>*mut T</code>. They are distinct from safe references like <code>&T</code> and <code>&mut T</code>.</p><p>B mixes reference syntax with raw pointer wording. C is C/C++ style, not Rust type syntax.</p>"
+    },
+    {
+      "id": 13,
+      "topic": "Address of Pointer Variable",
+      "stem": "Given `int x = 10; int* p = &x;`, what does `&p` represent?",
+      "options": {
+        "A": "The address of `x`, with type `int*`",
+        "B": "The address of the pointer variable `p`, with type `int**`",
+        "C": "The integer value stored in `x`, with type `int`"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> <code>p</code> is itself a variable. Its value is the address of <code>x</code>, but <code>p</code> also lives somewhere in memory. <code>&p</code> asks for the address of the pointer variable, so its type is <code>int**</code>.</p><p>A describes <code>p</code> or <code>&x</code>, not <code>&p</code>. C describes <code>*p</code>.</p>"
+    },
+    {
+      "id": 14,
+      "topic": "Reference Binding",
+      "stem": "Which C++ line correctly creates a reference alias `r` for an existing integer `x`?",
+      "options": {
+        "A": "`int& r = x;`",
+        "B": "`int& r = &x;`",
+        "C": "`int* r = x;`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> A reference binds to the object itself, so <code>int& r = x;</code> makes <code>r</code> another name for <code>x</code>.</p><p>B is wrong because <code>&x</code> is an <code>int*</code>, not an <code>int</code>. C is wrong because an <code>int*</code> needs an address such as <code>&x</code>, not the integer object directly.</p>"
+    },
+    {
+      "id": 15,
+      "topic": "Pointer Declaration Syntax",
+      "stem": "In the declaration `int* p = &x;`, what is the best way to read `int*`?",
+      "options": {
+        "A": "`p` is a pointer to an `int`",
+        "B": "`p` is an `int` that has already been dereferenced",
+        "C": "`p` is a reference alias to `x`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> In a declaration, <code>int*</code> means pointer-to-int. The variable <code>p</code> stores an address where an <code>int</code> can be found.</p><p>B confuses declaration syntax with expression dereference. C describes <code>int&</code>, not <code>int*</code>.</p>"
+    },
+    {
+      "id": 16,
+      "topic": "Canceling Operators",
+      "stem": "Given `int x = 10; int* p = &x;`, why does `&*p` usually evaluate back to the same address as `p`?",
+      "options": {
+        "A": "`*p` reaches the pointed-to `int`, and `&` then takes that same object's address",
+        "B": "`&*p` creates a new pointer variable on the heap",
+        "C": "`&*p` has type `int**` because two symbols are used"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> If <code>p</code> points to <code>x</code>, then <code>*p</code> is <code>x</code>. Taking <code>&</code> of that object gives the address of <code>x</code>, which is the value held by <code>p</code>.</p><p>B invents allocation that is not happening. C counts symbols instead of tracking types.</p>"
+    },
+    {
+      "id": 17,
+      "topic": "Canceling Operators",
+      "stem": "Given `int x = 10; int* p = &x;`, what is the type and meaning of `*&p`?",
+      "options": {
+        "A": "It is an `int*`, because `&p` gets the address of `p` and `*` dereferences back to `p`",
+        "B": "It is an `int`, because every `*` expression returns an integer",
+        "C": "It is an `int**`, because `&p` can never be simplified"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>&p</code> has type <code>int**</code> because it is the address of a pointer variable. Dereferencing it with <code>*</code> gets back the pointer variable <code>p</code>, whose type is <code>int*</code>.</p><p>B ignores that dereferencing a pointer-to-pointer gives a pointer. C stops halfway at <code>&p</code> and does not apply the outer <code>*</code>.</p>"
+    },
+    {
+      "id": 18,
+      "topic": "malloc Pointer Use",
+      "stem": "Which C snippet correctly stores one heap-allocated integer's address in `p`?",
+      "options": {
+        "A": "`int* p = malloc(sizeof(int));`",
+        "B": "`int p = malloc(sizeof(int));`",
+        "C": "`int& p = malloc(sizeof(int));`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>malloc(sizeof(int))</code> returns a pointer to a block large enough for one <code>int</code>, so the receiving variable should be an <code>int*</code> in C-style code.</p><p>B tries to store an address in an integer object. C is C++ reference syntax and does not bind correctly to a heap pointer returned by <code>malloc</code>.</p>"
+    },
+    {
+      "id": 19,
+      "topic": "cudaMalloc Output Parameter",
+      "stem": "If `int* p;` and a function must change `p` so that it points to newly allocated memory, what kind of argument does that function need?",
+      "options": {
+        "A": "The value of `p`, because changing a local copy changes the caller's pointer",
+        "B": "The address of `p`, so the function receives something like an `int**` and can write a new pointer value into `p`",
+        "C": "The dereferenced value `*p`, because allocation changes the integer rather than the pointer"
+      },
+      "correct_answer": "B",
+      "explanation": "<p><strong>B is correct.</strong> To change the caller's pointer variable, the function needs access to that variable. Passing <code>&p</code> gives the function the address of the pointer variable, so it can store the newly allocated address into <code>p</code>.</p><p>A only changes a copy. C would access the pointed-to integer, not the pointer variable that needs to receive the new address.</p>"
+    },
+    {
+      "id": 20,
+      "topic": "Rust References vs Raw Pointers",
+      "stem": "Which statement best separates Rust references from Rust raw pointers?",
+      "options": {
+        "A": "`&T` and `&mut T` are safe references checked by borrowing rules, while `*const T` and `*mut T` are raw pointer types",
+        "B": "`&T` is always unsafe, while `*const T` is always safe",
+        "C": "Rust has references but no raw pointer types"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> Rust references such as <code>&T</code> and <code>&mut T</code> participate in borrow checking. Raw pointers use <code>*const T</code> and <code>*mut T</code> and are the lower-level pointer forms.</p><p>B reverses the safety intuition. C is wrong because Rust does have raw pointer types.</p>"
+    },
+    {
+      "id": 21,
+      "topic": "Mixed C++ Type Reasoning",
+      "stem": "Given `int x = 7; int* p = &x; int& r = x;`, which statement is correct?",
+      "options": {
+        "A": "`r` is an alias for `x`, `p` stores the address of `x`, and `*p` accesses the same integer object as `r`",
+        "B": "`r` stores the address of `x`, so `*r` is required to read the integer",
+        "C": "`p` and `r` are both raw pointers with type `int*`"
+      },
+      "correct_answer": "A",
+      "explanation": "<p><strong>A is correct.</strong> <code>r</code> is a C++ reference alias for <code>x</code>. <code>p</code> stores <code>&x</code>. Dereferencing <code>p</code> with <code>*p</code> reaches the same integer object that <code>r</code> names directly.</p><p>B incorrectly treats a reference as a pointer. C erases the difference between pointer and reference types.</p>"
+    }
+  ]
+}

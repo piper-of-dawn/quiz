@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ topic.title }} · MCQ Quiz</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Roboto:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="{% static 'quiz/css/mcq.css' %}">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script defer src="{% static 'quiz/js/theme.js' %}"></script>
+  <script defer src="{% static 'quiz/js/grid.js' %}"></script>
+  <script defer src="{% static 'quiz/js/question_keyboard_nav.js' %}"></script>
+  <script defer src="{% static 'quiz/js/mcq.js' %}"></script>
+</head>
+<body data-theme-scope="quiz" data-timer-seconds="{{ timer_seconds|default:'0' }}">
+  <canvas id="gridCanvas" aria-hidden="true"></canvas>
+  <button id="themeToggleBtn" class="theme-toggle" type="button" aria-label="Toggle theme">Toggle theme</button>
+  <main class="wrap">
+    <header>
+      <div>
+        <a class="back-link" href="{% url 'topic_list' %}">All topics</a>
+        <h1>{{ topic.title }}</h1>
+      </div>
+      <div class="sub">{{ total }} questions</div>
+    </header>
+    <div class="grid">
+      <form id="quizForm" autocomplete="off">
+        <div class="content">
+          {% for q in questions %}
+            <section class="question" data-correct="{{ q.answer }}" data-qname="q{{ q.index }}" data-json='{{ q.json|escape }}'>
+              <div class="qmeta-row">
+                <div class="qmeta">Question {{ q.index|add:1 }} of {{ total }}</div>
+                <button class="btn btn-ghost inline-explain-btn" type="button" hidden>See Explanation</button>
+              </div>
+              <div class="stem">{{ q.text_html|safe }}</div>
+              <ul class="choices">
+                {% for idx, choice, choice_html in q.choices %}
+                  <li class="choice">
+                    <input type="radio" name="q{{ q.index }}" value="{{ idx }}" id="q{{ q.index }}_{{ idx }}">
+                    <label for="q{{ q.index }}_{{ idx }}">{{ choice_html|safe }}</label>
+                  </li>
+                {% endfor %}
+              </ul>
+            </section>
+          {% endfor %}
+        </div>
+      </form>
+      <aside class="sidebar">
+        <div class="card">
+          <div class="content">
+            <div class="metric"><span class="label">Score</span><span class="value" id="scoreValue">0 / {{ total }}</span></div>
+            <div class="metric"><span class="label">Streak</span><span class="value" id="streakValue">0</span></div>
+            <span class="pill" id="longestPill">Longest: 0</span>
+            <hr>
+            <div class="metric"><span class="label">Timer</span><span class="value mono" id="timerValue">--:--</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <div class="metric"><span class="label">Time Chart</span><span class="value value-small mono" id="timeChartLatest">--</span></div>
+            <div class="time-chart-wrap">
+              <canvas id="timeChartCanvas" aria-label="Running average time per answered question"></canvas>
+              <div id="timeChartEmpty" class="chart-empty">Answer questions to see the trend.</div>
+            </div>
+            <div id="timeChartDelta" class="chart-delta">YOU ARE --% ON PACE WITH EXPECTED.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="content">
+            <div class="metric"><span class="label">Outcome</span><span class="value" id="outcomeStatus">--</span></div>
+            <button id="seeExplanationBtn" class="btn btn-primary see-explanation-btn" type="button" hidden>See Explanation</button>
+            <div id="outcomeBox" hidden>
+              <div class="pill pill-muted" id="outcomePill">Awaiting check...</div>
+              <div id="outcomeBody">Select an answer.</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+staticfiles/*
+!staticfiles/.gitkeep
+node_modules/
+dist/
+electron/app-url.json
+*.log
+.env
