@@ -138,6 +138,12 @@
       }
       question.classList.toggle('correct', ok);
       question.classList.toggle('incorrect', !ok);
+      question.classList.remove('glow-correct', 'glow-incorrect');
+      void question.offsetWidth;
+      question.classList.add(ok ? 'glow-correct' : 'glow-incorrect');
+      window.setTimeout(() => {
+        question.classList.remove('glow-correct', 'glow-incorrect');
+      }, 4100);
       question.querySelectorAll('.choice').forEach((choice) => choice.classList.remove('is-correct', 'is-incorrect'));
       const selectedLi = selected.closest('.choice');
       if (selectedLi) selectedLi.classList.add(ok ? 'is-correct' : 'is-incorrect');
