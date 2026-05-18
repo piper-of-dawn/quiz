@@ -1049,3 +1049,71 @@
       line-height: 1.66;
     }
   }
+
+/* App-specific refinements: answered questions keep correctness color.
+   Blue glow is only for the active unanswered question. */
+.question.correct.is-selected,
+:root[data-theme="dark"] .question.correct.is-selected {
+  border-color: rgba(34,197,94,0.95) !important;
+  box-shadow: 0 8px 22px rgba(34,197,94,0.44) !important;
+  animation: none !important;
+}
+.question.incorrect.is-selected,
+:root[data-theme="dark"] .question.incorrect.is-selected {
+  border-color: rgba(191,80,92,0.95) !important;
+  box-shadow: 0 8px 22px rgba(191,80,92,0.42) !important;
+  animation: none !important;
+}
+.question.correct.is-selected.glow-correct {
+  animation: correctGlow 3s ease-out !important;
+}
+.question.incorrect.is-selected.glow-incorrect {
+  animation: incorrectGlow 3s ease-out !important;
+}
+:root[data-theme="dark"] .question.correct.is-selected.glow-correct {
+  animation: correctGlowDark 3s ease-out !important;
+}
+:root[data-theme="dark"] .question.incorrect.is-selected.glow-incorrect {
+  animation: incorrectGlowDark 3s ease-out !important;
+}
+
+.sidebar {
+  display: grid;
+  gap: 16px;
+}
+.sidebar .card .content {
+  padding: 24px 24px;
+}
+.sidebar .card {
+  border-radius: 20px;
+}
+.metric {
+  align-items: center;
+  gap: 14px;
+}
+.metric .label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.metric .value,
+.metric .value-small {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+#outcomeBody {
+  font-size: 14px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+#outcomeBox {
+  max-height: none;
+  padding-right: 0;
+}
+.see-explanation-btn {
+  min-height: 38px;
+}
+@media (max-width: 920px) {
+  .sidebar .card .content {
+    padding: 22px 23px;
+  }
+}
