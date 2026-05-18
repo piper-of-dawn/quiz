@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 import dj_database_url
 
@@ -72,6 +73,11 @@ DATABASE_URL = (
     or os.environ.get("POSTGRES_URL_NON_POOLING")
 )
 if DATABASE_URL:
+    split_database_url = urlsplit(DATABASE_URL)
+    filtered_query = urlencode(
+        [(key, value) for key, value in parse_qsl(split_database_url.query, keep_blank_values=True) if key != "supa"]
+    )
+    DATABASE_URL = urlunsplit(split_database_url._replace(query=filtered_query))
     DATABASES = {
         "default": dj_database_url.parse(
             DATABASE_URL,
